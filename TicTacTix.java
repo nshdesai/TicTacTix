@@ -15,10 +15,7 @@ import java.util.Arrays;
  *
  */
 public class TicTacTix {
-    /**
-     * Default constructor for the TicTacTix game board
-     */
-    private char[][][] board;
+   private char[][][] board;
 
     // A few constants used to make the logic more transparent
     public static final char PLAYER = 'X';
@@ -65,7 +62,7 @@ public class TicTacTix {
             row = coords[ROW];
             column = coords[COLUMN];
             // Check if the move is valid
-            validMove = validateMove(layer, row, column);
+            validMove = validateMove(layer, row, column, player);
         } while (!validMove);
 
         // Fill the grid with the appropriate character
@@ -97,10 +94,13 @@ public class TicTacTix {
     }
 
 
-    private boolean validateMove(int layer, int row, int col) {
+    private boolean validateMove(int layer, int row, int col, char player) {
         // \u0000 (null character) is the default char value in Java
         if (board[layer][row][col] != '\u0000') {
-            System.out.println("This cell is already taken. Please pick another one");
+            // Only be verbose when the user picks a cell that's taken
+            if (player == PLAYER) {
+                System.out.println("This cell is already taken. Please pick another one");
+            }
             return false;
         }
         return true;
@@ -127,8 +127,9 @@ public class TicTacTix {
             }
             catch(InputMismatchException exp) {
                 System.out.println("Please enter an integer between 1 and 3");
-                input.nextLine();
             }
+            // Clear the input stream
+            input.nextLine();
         }
 
         return choice;

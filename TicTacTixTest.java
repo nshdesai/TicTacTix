@@ -31,7 +31,6 @@ public class TicTacTixTest {
         while (true) {
             printPrompt(GOING_FIRST_PROMPT);
             String response = input.nextLine();
-            System.out.println("Your response was: " + response);
 
             if (response.toLowerCase().equals("y")) {
                 return board.PLAYER;
@@ -64,7 +63,7 @@ public class TicTacTixTest {
     private static void printPrompt(int promptType) {
         switch (promptType) {
             case GOING_FIRST_PROMPT:
-                System.out.print("Would you like to go first (Y/N): ");
+                System.out.print("Would you like to go first (y/n): ");
                 break;
             default:
                 System.out.print("Good-bye!");
@@ -76,7 +75,6 @@ public class TicTacTixTest {
 
         while (!winner) {
             board.makeMove(goingFirst);
-            System.out.println("Computer playing!");
             board.makeMove(goingSecond);
             System.out.println(board);
             winner = board.checkWinner();
