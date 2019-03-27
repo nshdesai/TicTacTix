@@ -12,9 +12,12 @@ import java.util.InputMismatchException;
 public class TicTacTixTest {
     private static final Scanner input = new Scanner(System.in);
     private static final int GOING_FIRST_PROMPT = 0;
+    public static final TicTacTix board;
 
     public static void main(String[] args) {
+        board = new TicTacTix();
         boolean goingFirst = goingFirst();
+        gameLoop();
     }
 
     /**
@@ -53,4 +56,23 @@ public class TicTacTixTest {
                 System.out.print("Good-bye!");
         }
     }
+
+    private void gameLoop(boolean goingFirst) {
+        boolean winner = false;
+
+        while (!winner) {
+            switch (goingFirst) {
+                case true:
+                    board.playerMove();
+                    board.computerMove();
+                    break;
+                case false:
+                    board.computerMove();
+                    board.playerMove();
+                    break;
+            }
+            winner = board.checkWinner();
+        }
+    }
+
 }
