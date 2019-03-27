@@ -2,44 +2,58 @@ import java.util.Scanner;
 import java.util.InputMismatchException;
 
 /**
- * A menu driven, terminal based implemnentation of the Tic-Tactix game
+ * A menu driven, terminal based implementation of the Tic-Tactix game
  *
- * @@author Nishkrit Desai
- * @@version 20th March 2019
- * @@see TicTacTix
+ * @author Nishkrit Desai
+ * @version 20th March 2019
+ * @see TicTacTix
  *
  */
 public class TicTacTixTest {
     private static final Scanner input = new Scanner(System.in);
     private static final int GOING_FIRST_PROMPT = 0;
-    public static final TicTacTix board;
+    private static TicTacTix board;
 
     public static void main(String[] args) {
         board = new TicTacTix();
-        boolean goingFirst = goingFirst();
-        gameLoop();
+        char goingFirst = getGoingFirst();
+        char goingSecond = getGoingSecond(goingFirst);
+        gameLoop(goingFirst, goingSecond);
     }
 
     /**
-     * Returns a boolean that says whether the user wants to go first or not.
+     * Returns a char (X/O) that is the assigned symbol for the player going first.
+     * i.e. if the user is going first the method returns 'X' else returns 'O'
      * Uses input validation to ensure that the user enters one of (y/Y/n/N)
-     * @return boolean Is the user going first?
+     * @return char the character code for a player (user = 'X', computer = 'O')?
      */
-    private static boolean goingFirst() {
-        String response = "";
-
+    private static char getGoingFirst() {
         while (true) {
             printPrompt(GOING_FIRST_PROMPT);
-            response = input.nextLine();
+            String response = input.nextLine();
             System.out.println("Your response was: " + response);
 
             if (response.toLowerCase().equals("y")) {
-                return true;
+                return board.PLAYER;
             }
             else if (response.toLowerCase().equals("n")) {
-                return false;
+                return board.COMPUTER;
             }
         }
+    }
+
+    /**
+     * Returns the character code for the player going second (X/O). This is a
+     * simple helper method used to simplify/clarify the logic in the gameLoop()
+     * method.
+     * @param  goingFirst character code for the player going first
+     * @return            character code for the player going second
+     */
+    private static char getGoingSecond(char goingFirst) {
+        if (goingFirst == board.PLAYER) {
+            return board.COMPUTER;
+        }
+        return board.PLAYER;
     }
 
     /**
@@ -50,29 +64,22 @@ public class TicTacTixTest {
     private static void printPrompt(int promptType) {
         switch (promptType) {
             case GOING_FIRST_PROMPT:
-                System.out.print("Would you like to go first (y/Y/n/N): ");
+                System.out.print("Would you like to go first (Y/N): ");
                 break;
             default:
                 System.out.print("Good-bye!");
         }
     }
 
-    private void gameLoop(boolean goingFirst) {
+    private static void gameLoop(char goingFirst, char goingSecond) {
         boolean winner = false;
 
         while (!winner) {
-            switch (goingFirst) {
-                case true:
-                    board.playerMove();
-                    board.computerMove();
-                    break;
-                case false:
-                    board.computerMove();
-                    board.playerMove();
-                    break;
-            }
+            board.makeMove(goingFirst);
+            System.out.println("Computer playing!");
+            board.makeMove(goingSecond);
+            System.out.println(board);
             winner = board.checkWinner();
         }
     }
-
 }

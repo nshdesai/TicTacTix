@@ -23,6 +23,7 @@ no one has won.
 4. When getting the user’s move (i.e., layer, row, and column), use input validation and
 exception handling techniques. If a grid cell is already full, the user should not be
 allowed to put their “X” into it, and asked for a different cell.
+
 5. Use random number generation to make the computer’s move. If a grid cell is already
 full, the computer should randomly pick another location until an empty cell is found.
 
