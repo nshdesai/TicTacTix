@@ -20,6 +20,10 @@ public class TicTacTix {
     // A few constants used to make the logic more transparent
     public static final char PLAYER = 'X';
     public static final char COMPUTER = 'O';
+    // Game states
+    public static final char STALEMATE = 'S';
+    public static final char PLAYABLE = 'P';
+
     private static final int LAYER = 0;
     private static final int ROW = 1;
     private static final int COLUMN = 2;
@@ -29,6 +33,7 @@ public class TicTacTix {
 
     public TicTacTix () {
         board = new char[3][3][3];
+        board[1][1][1] = 'N'; // The center cell is inaccessible
     }
 
     public String toString() {
@@ -118,21 +123,33 @@ public class TicTacTix {
     }
 
     private int getCoordInput(int inputType) {
-        int choice = -1;
+        int coord = -1;
+        boolean validCoord = false;
 
-        while ((choice < 1) || (choice > 3)) {
+        while (!validCoord) {
             try {
                 printPrompt(inputType);
-                choice = input.nextInt();
+                coord = input.nextInt();
+                validCoord = validateCoord(coord);
             }
             catch(InputMismatchException exp) {
-                System.out.println("Please enter an integer between 1 and 3");
+                System.out.println("Please enter an integer.");
             }
-            // Clear the input stream
+            // Clear the input stream everytime (otherwise "<int> <int> <int>" is read as valid input)
             input.nextLine();
         }
 
-        return choice;
+        return coord;
+    }
+
+    private boolean validateCoord(int coord) {
+        if ((coord >= 1) && (coord <= 3)) {
+            return true;
+        }
+        else {
+            System.out.println("Coordinate is out of bounds. Please enter a value between 1 and 3");
+            return false;
+        }
     }
 
     private void printPrompt(int inputType) {
@@ -152,8 +169,76 @@ public class TicTacTix {
         System.out.print(prompt);
     }
 
-    public boolean checkWinner() {
+    public char findGameState() {
+        char[] symbols = {'X', 'O'};
+        boolean diagonals, streak;
+
+        if (!checkStalemate()) {
+            for (char symbol: symbols) {
+                diagonals = checkDiagonals(symbol);
+                streak = checkAllStreaks(symbol);
+
+                if (diagonals || streak) {
+                    return symbol; // Return winner
+                }
+            }
+            return PLAYABLE;
+        }
+        return STALEMATE;
+    }
+
+    private boolean checkDiagonals(char symbol) {
+        
+    }
+
+    private boolean checkAllStreaks(char symbol) {
+        int streak = 0;
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                if (checkStreak(x, y, symbol, LAYER))
+                    return true;
+                if (checkStreak(x, y, symbol, ROW))
+                    return true;
+                if (checkStreak(x, y, symbol, COLUMN))
+                    return true;
+            }
+        }
         return false;
+    }
+
+    public boolean checkStreak(int x, int y, char symbol, int type) {
+        int streak = 0;
+
+        for (int count = 0; count < 3; count++) {
+            if (type == LAYER) {
+                if (board[count][x][y] == symbol)
+                    streak++;
+            }
+            else if (type == ROW) {
+                if (board[x][count][y] == symbol)
+                    streak++;
+            }
+            else if (type == COLUMN) {
+                if (board[x][y][count] == symbol)
+                    streak++;
+            }
+        }
+
+        if (streak == 3)
+            return true;
+        return false;
+    }
+
+    private boolean checkStalemate() {
+        for (int x = 0; x < 2; x++) {
+            for (int y = 0; y < 2; y++) {
+                for (int z = 0; z < 2; z++) {
+                    if (board[x][y][z] == '\u0000')
+                        return false;
+                }
+            }
+        }
+        return true;
     }
 
 }

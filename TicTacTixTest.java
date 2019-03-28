@@ -71,13 +71,24 @@ public class TicTacTixTest {
     }
 
     private static void gameLoop(char goingFirst, char goingSecond) {
-        boolean winner = false;
+        char gameState = board.PLAYABLE;
 
-        while (!winner) {
+        while (gameState == board.PLAYABLE) {
             board.makeMove(goingFirst);
+            System.out.println(board);
+
             board.makeMove(goingSecond);
             System.out.println(board);
-            winner = board.checkWinner();
+
+            gameState = board.findGameState();
+        }
+        handleEnding(gameState);
+    }
+
+    private static void handleEnding(char gameState) {
+        if (gameState == board.PLAYER) {
+            System.out.println("Yay! You won!");
         }
     }
+
 }
