@@ -221,14 +221,30 @@ public class TicTacTix {
      * @return        did the specified player hit any diagonal streak (boolean) ?
      */
     private boolean checkDiagonals(char symbol) {
-        // Check all vertical diagonals
-        int[] diag_cells = {0, 2};
+        // Don't check the middle layer because not vertical diagonals can pass through it's center
+        int[] diag_cells = {0, 2}; // Possible end coords for a diagonal
 
+        // Check all vertical diagonals
         for (int col: diag_cells) {
-            for (int count = 0; count < 3; count++) {
-                //TODO: Check for all winning diagonals
-            }
+            // a == b && b == c and c == symbol => a == b == c == symbol
+            if ((board[0][0][col] == board[1][1][col]) && (board[1][1][col] == board[2][2][col]) && (board[2][2][col] == symbol))
+                return true;
+            else if ((board[0][2][col] == board[1][1][col]) && (board[1][1][col] == board[2][0][col]) && (board[2][0][col] == symbol))
+                return true;
         }
+        for (int row: diag_cells) {
+            if((board[0][row][2] == board[1][row][1]) && (board[1][row][1] == board[2][row][0]) && (board[0][row][2] == symbol))
+                return true;
+            else if((board[0][row][0] == board[1][row][1]) && (board[1][row][1] == board[2][row][2]) && (board[0][row][0] == symbol))
+                return true;
+        }
+
+        // Check horizontal diagonals (at the top and bottom face of the game "cube")
+        for (int layer: diag_cells) {
+            if ((board[layer][0][0] == board[layer][1][1]) && (board[layer][1][1] == board[layer][2][2]) && (board[layer][2][2] == symbol))
+                return true;
+        }
+
         return false;
     }
 
