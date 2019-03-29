@@ -33,9 +33,9 @@ public class TicTacTix {
 
     public TicTacTix () {
         board = new char[3][3][3];
+        initBoard(board);
         board[1][1][1] = 'N'; // The center cell is inaccessible
     }
-
 
     public String toString() {
         String out = " =============================\n";
@@ -70,6 +70,18 @@ public class TicTacTix {
         return out;
     }
 
+    /**
+     * \u0000 (null character) is the default char value in Java
+     * Some terminals will handle printing this character differently
+     * This method was written to avoid variation in how the board is printed
+     * by filling the array with spaces.
+     */
+    private void initBoard() {
+        for (char[][] layer: board) {
+            for (char[] row: layer)
+                Arrays.fill(row, ' ');
+        }
+    }
     public void makeMove(char player) {
         int layer = 0;
         int row = 0;
@@ -118,8 +130,7 @@ public class TicTacTix {
 
 
     private boolean validateMove(int layer, int row, int col, char player) {
-        // \u0000 (null character) is the default char value in Java
-        if (board[layer][row][col] != '\u0000') {
+        if (board[layer][row][col] != ' ') {
             // Only be verbose when the user picks a cell that's taken
             if (player == PLAYER) {
                 System.out.println("This cell is already taken. Please pick another one");
@@ -259,7 +270,7 @@ public class TicTacTix {
         for (int x = 0; x < 2; x++) {
             for (int y = 0; y < 2; y++) {
                 for (int z = 0; z < 2; z++) {
-                    if (board[x][y][z] == '\u0000')
+                    if (board[x][y][z] == ' ')
                         return false;
                 }
             }
