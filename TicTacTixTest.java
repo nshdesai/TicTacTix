@@ -111,9 +111,11 @@ public class TicTacTixTest {
             buffer = new BufferedReader(new FileReader(HALL_OF_FAME_FILE));
 
             String line = "";
+            int count = 1;
             while (line != null) {
                 line = buffer.readLine().trim();
-                System.out.println(line);
+                System.out.println(count + ": " + line);
+                count++;
             }
         }
         catch (NullPointerException e) {
@@ -136,8 +138,9 @@ public class TicTacTixTest {
 
         while (gameState == board.PLAYABLE) {
             handlePlayer(goingFirst);
-            handlePlayer(goingSecond);
+            gameState = board.findGameState();
 
+            handlePlayer(goingSecond);
             gameState = board.findGameState();
         }
         handleEnding(gameState);
@@ -148,9 +151,9 @@ public class TicTacTixTest {
      * @param player the code for the player whose move is to be handled (PLAYER / COMPUTER)
      */
     private static void handlePlayer(char player) {
+        System.out.println(board);
         System.out.println(getPlayerGreeting(player));
         board.makeMove(player);
-        System.out.println(board);
     }
 
     /**
@@ -158,6 +161,9 @@ public class TicTacTixTest {
      * @param gameState character code (read from the TicTacTix class) for the state of the game (PLAYER/COMPUTER/STALEMATE)
      */
     private static void handleEnding(char gameState) {
+        // Show the final state of the board
+        System.out.println(board);
+        
         if (gameState == board.PLAYER) {
             System.out.println("Yay! You won!");
             System.out.println("This must be the fall of the machines ...");
@@ -175,7 +181,7 @@ public class TicTacTixTest {
     }
 
     /**
-     * Simple helper method to return a String containing a simple greeting prompt
+     * Simple helper method to return a String containing a prompt
      * before each player's turn.
      * @param  player character code for the player (the code for current player's turn)
      * @return        String containing 'turn prompt' for the current player
@@ -196,15 +202,18 @@ public class TicTacTixTest {
             String playerName = "";
 
             while (playerName.equals("")) {
+                // Get the player name
                 printPrompt(GET_PLAYER_NAME);
                 playerName = input.nextLine();
 
+                // If the player didn't enter anything
                 if (playerName.equals("")) {
                     System.out.println("Please enter a name with atleast one character.");
                 }
             }
-            writer.println(playerName);
-            writer.close();
+
+            writer.println(playerName); // Add the player into the Hall of Fame file
+            writer.close(); // Close file
             System.out.println("You have been inducted into the TicTacTix Hall of Fame!");
         }
         // If the file could not be opened

@@ -1,6 +1,6 @@
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-import java.util.Arrays;
 
 /**
  * class for the Tic-Tactix game. This class will instantiate the
@@ -27,7 +27,8 @@ public class TicTacTix {
     private static final int COLUMN = 2;
 
     // Scanner to get input from user
-    public static final Scanner input = new Scanner(System.in);
+    // Only moves and input within the game (not the interface)
+    private static final Scanner input = new Scanner(System.in);
 
     public TicTacTix () {
         board = new char[3][3][3];
@@ -49,7 +50,7 @@ public class TicTacTix {
     }
 
     /**
-     * Method to handle all teh moves in the game. This method is used by the Test program
+     * Method to handle all the moves in the game. This method is used by the Test program
      * to makes moves for either player.
      * @param player the character constant for a player (PLAYER / COMPUTER)
      */
@@ -93,6 +94,7 @@ public class TicTacTix {
             coords[COLUMN] = getCoordInput(COLUMN) - 1;
         }
 
+        // Computer randomly picks a coordinate
         else if (player == COMPUTER) {
             coords[LAYER] = randInt(0, 3);
             coords[ROW] = randInt(0, 3);
@@ -105,25 +107,6 @@ public class TicTacTix {
         }
 
         return coords;
-    }
-
-    /**
-     * Checks if a move made to a particular cell is valid. i.e. Is the cell already taken or not?
-     * @param  layer  layer coord of move being made
-     * @param  row    row coord of move
-     * @param  col    column coord of move
-     * @param  player character code for player
-     * @return        is the move valid?
-     */
-    private boolean validateMove(int layer, int row, int col, char player) {
-        if (board[layer][row][col] != ' ') {
-            // Only be verbose when the user picks a cell that's taken
-            if (player == PLAYER) {
-                System.out.println("This cell is already taken. Please pick another one");
-            }
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -150,6 +133,25 @@ public class TicTacTix {
         }
 
         return coord;
+    }
+
+    /**
+     * Checks if a move made to a particular cell is valid. i.e. Is the cell already taken or not?
+     * @param  layer  layer coord of move being made
+     * @param  row    row coord of move
+     * @param  col    column coord of move
+     * @param  player character code for player
+     * @return        is the move valid?
+     */
+    private boolean validateMove(int layer, int row, int col, char player) {
+        if (board[layer][row][col] != ' ') {
+            // Only be verbose when the user picks a cell that's taken
+            if (player == PLAYER) {
+                System.out.println("This cell is already taken. Please pick another one");
+            }
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -205,9 +207,8 @@ public class TicTacTix {
                 diagonals = checkDiagonals(symbol);
                 streak = checkAllStreaks(symbol);
 
-                if (diagonals || streak) {
+                if (diagonals || streak)
                     return symbol; // Return winner
-                }
             }
             return PLAYABLE;
         }
@@ -245,6 +246,8 @@ public class TicTacTix {
         // Check horizontal diagonals (at the top and bottom face of the game "cube")
         for (int layer: diag_cells) {
             if ((board[layer][0][0] == board[layer][1][1]) && (board[layer][1][1] == board[layer][2][2]) && (board[layer][2][2] == symbol))
+                return true;
+            if ((board[layer][0][2] == board[layer][1][1]) && (board[layer][1][1] == board[layer][2][0]) && (board[layer][2][0] == symbol))
                 return true;
         }
 
