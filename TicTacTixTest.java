@@ -1,8 +1,13 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
 /**
- * A menu driven, terminal based implementation of the Tic-Tactix game
+ * A terminal based implementation of the Tic-Tactix game
  *
  * @author Nishkrit Desai
  * @version 20th March 2019
@@ -10,18 +15,23 @@ import java.util.InputMismatchException;
  *
  */
 public class TicTacTixTest {
-    private static final Scanner input = new Scanner(System.in);
     private static final int GOING_FIRST_PROMPT = 0;
     private static final int GREETING_MESSAGE = 1;
+    private static final int GET_PLAYER_NAME = 2;
+    private static final int HALL_OF_FAME = 3;
+
+    private static final Scanner input = new Scanner(System.in);
+    private static BufferedReader buffer; // To read the file
+    private static PrintWriter writer; // Write to the file
     private static TicTacTix board;
 
     public static void main(String[] args) {
         board = new TicTacTix();
         printPrompt(GREETING_MESSAGE);
+        printHallofFame();
 
         char goingFirst = getGoingFirst();
         char goingSecond = getGoingSecond(goingFirst);
-
         gameLoop(goingFirst, goingSecond);
     }
 
@@ -60,8 +70,8 @@ public class TicTacTixTest {
     }
 
     /**
-     * Prints the prompt for user input for each instance where the user input is
-     * required. Uses a set of private constants to check which prompt is required.
+     * Prints prompt and information before any type of user input/event.
+     * Uses a set of private constants to check which prompt is required.
      * @param promptType Which prompt is to be printed?
      */
     private static void printPrompt(int promptType) {
@@ -69,18 +79,46 @@ public class TicTacTixTest {
             case GOING_FIRST_PROMPT:
                 System.out.print("Would you like to go first (y/n): ");
                 break;
-
             case GREETING_MESSAGE:
                  String line1 = "*************************************\n";
                  String line2 = "* TicTacTix - A 3D Tic Tac Toe game *\n";
-                 String line3 = "*        Design: Mr. Rao            *\n";
-                 String line4 = "*        Author: ndesai             *\n";
+                 String line3 = "*         Design: Mr. Rao           *\n";
+                 String line4 = "*         Author: ndesai            *\n";
                  String line5 = "*************************************\n";
                  System.out.println(line1 + line2 + line3 + line4 + line5);
+                 break;
+            case GET_PLAYER_NAME:
+                System.out.print("What's your name? : ");
+                break;
+            case HALL_OF_FAME:
+                 System.out.println("====================");
+                 System.out.println("*   HALL OF FAME   *");
+                 System.out.println("====================");
                  break;
             default:
                 System.out.print("Good-bye!");
         }
+    }
+
+    private static void printHallofFame() {
+        printPrompt(HALL_OF_FAME);
+        try {
+            buffer = new BufferedReader(new FileReader("HallOfFame.txt"));
+
+            String line = "";
+            while (line != null) {
+                line = buffer.readLine().trim();
+                System.out.println(line);
+            }
+        }
+        catch (NullPointerException e) {
+            // Don't do anything here
+            // Handling EOF (by not raising a NullPointerException)
+        }
+        catch (IOException e) {
+            System.out.println("Mwahaha...No human has ever beat me!");
+        }
+        System.out.println("\n********************");
     }
 
     private static void gameLoop(char goingFirst, char goingSecond) {
@@ -98,6 +136,40 @@ public class TicTacTixTest {
     private static void handleEnding(char gameState) {
         if (gameState == board.PLAYER) {
             System.out.println("Yay! You won!");
+            System.out.println("This must be the fall of the machines ...");
+            addHighScorer();
+        }
+        else if (gameState == board.COMPUTER) {
+            System.out.println("I have won, come back with a real challenge.");
+            System.out.println("Once again, computers have outsmart the puny humans");
+        }
+        else if (gameState == board.STALEMATE) {
+            System.out.println("Stalemate! Funny isn't it - how the universe strives for balance");
+            System.out.println("We could do this forever all it takes is one bored human and a smart computer.");
+        }
+        printPrompt(10); // Good-bye!
+    }
+
+    private static void addHighScorer() {
+        try {
+            writer = new PrintWriter(new FileWriter("HallOfFame.txt", true));
+            String playerName = "";
+
+            while (playerName.equals("")) {
+                printPrompt(GET_PLAYER_NAME);
+                playerName = input.nextLine();
+
+                if (playerName.equals("")) {
+                    System.out.println("Please enter a name with atleast one character.");
+                }
+            }
+            writer.println(playerName);
+            writer.close();
+            System.out.println("You have been inducted into the TicTacTix Hall of Fame!");
+        }
+        catch(IOException e) {
+            System.out.println("The high score file is currently busy. Fatal. Exiting.");
+            System.exit(0);
         }
     }
 

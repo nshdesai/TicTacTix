@@ -115,9 +115,9 @@ public class TicTacTix {
         }
 
         else if (player == COMPUTER) {
-            coords[LAYER] = randInt(0, 2);
-            coords[ROW] = randInt(0, 2);
-            coords[COLUMN] = randInt(0, 2);
+            coords[LAYER] = randInt(0, 3);
+            coords[ROW] = randInt(0, 3);
+            coords[COLUMN] = randInt(0, 3);
         }
         // Just in case an attempt is made to pass in character other than X/O
         else {
@@ -229,7 +229,6 @@ public class TicTacTix {
     }
 
     private boolean checkAllStreaks(char symbol) {
-        int streak = 0;
         for (int x = 0; x < 3; x++) {
             for (int y = 0; y < 3; y++) {
                 if (checkStreak(x, y, symbol, LAYER))
@@ -267,9 +266,9 @@ public class TicTacTix {
     }
 
     private boolean checkStalemate() {
-        for (int x = 0; x < 2; x++) {
-            for (int y = 0; y < 2; y++) {
-                for (int z = 0; z < 2; z++) {
+        for (int x = 0; x < 3; x++) {
+            for (int y = 0; y < 3; y++) {
+                for (int z = 0; z < 3; z++) {
                     if (board[x][y][z] == ' ')
                         return false;
                 }
