@@ -36,18 +36,36 @@ public class TicTacTix {
         board[1][1][1] = 'N'; // The center cell is inaccessible
     }
 
+
     public String toString() {
-        String out = "";
+        String out = " =============================\n";
 
-        for (char[][] layer: board) {
-            out += "LAYER: \n";
+        // Layer labels
+        out += "  Layer 1   Layer 2   Layer 3 \n   1 2 3     1 2 3     1 2 3 \n";
+        out += " -----------------------------\n";
 
-            for (char[] row: layer) {
-                out += Arrays.toString(row) + "\n";
+        for (int line = 0; line < 5; line++) {
+            if (line % 2 == 0) {
+                for (int layer = 0; layer < 3; layer++) {
+                    String row = line/2 + 1 + ": "; // Row label
+
+                    for (int col = 0; col < 5; col++) {
+                        // Even column values contain cells
+                        if (col % 2 == 0)
+                            row += board[layer][line/2][col/2];
+                        else
+                            row += "|";
+                    }
+                    row += "  ";
+                    out += row;
+                }
+                out += "\n";
             }
-
-            out += "***************** \n\n";
+            else {
+                out += "   =+=+=     =+=+=     =+=+=\n";
+            }
         }
+        out += "\n *****************************\n";
 
         return out;
     }
@@ -188,7 +206,15 @@ public class TicTacTix {
     }
 
     private boolean checkDiagonals(char symbol) {
-        
+        // Check all vertical diagonals
+        int[] diag_cells = {0, 2};
+
+        for (int col: diag_cells) {
+            for (int count = 0; count < 3; count++) {
+                //TODO: Check for all winning diagonals
+            }
+        }
+        return false;
     }
 
     private boolean checkAllStreaks(char symbol) {

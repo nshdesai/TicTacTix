@@ -12,12 +12,16 @@ import java.util.InputMismatchException;
 public class TicTacTixTest {
     private static final Scanner input = new Scanner(System.in);
     private static final int GOING_FIRST_PROMPT = 0;
+    private static final int GREETING_MESSAGE = 1;
     private static TicTacTix board;
 
     public static void main(String[] args) {
         board = new TicTacTix();
+        printPrompt(GREETING_MESSAGE);
+
         char goingFirst = getGoingFirst();
         char goingSecond = getGoingSecond(goingFirst);
+
         gameLoop(goingFirst, goingSecond);
     }
 
@@ -65,6 +69,15 @@ public class TicTacTixTest {
             case GOING_FIRST_PROMPT:
                 System.out.print("Would you like to go first (y/n): ");
                 break;
+
+            case GREETING_MESSAGE:
+                 String line1 = "*************************************\n";
+                 String line2 = "* TicTacTix - A 3D Tic Tac Toe game *\n";
+                 String line3 = "*        Design: Mr. Rao            *\n";
+                 String line4 = "*        Author: ndesai             *\n";
+                 String line5 = "*************************************\n";
+                 System.out.println(line1 + line2 + line3 + line4 + line5);
+                 break;
             default:
                 System.out.print("Good-bye!");
         }
@@ -74,11 +87,8 @@ public class TicTacTixTest {
         char gameState = board.PLAYABLE;
 
         while (gameState == board.PLAYABLE) {
-            board.makeMove(goingFirst);
-            System.out.println(board);
-
-            board.makeMove(goingSecond);
-            System.out.println(board);
+            handlePlayer(goingFirst);
+            handlePlayer(goingSecond);
 
             gameState = board.findGameState();
         }
@@ -91,4 +101,16 @@ public class TicTacTixTest {
         }
     }
 
+    private static String getPlayerGreeting(char player) {
+        if (player == board.PLAYER) {
+            return "User's turn";
+        }
+        return "Computer's turn";
+    }
+
+    private static void handlePlayer(char player) {
+        System.out.println(getPlayerGreeting(player));
+        board.makeMove(player);
+        System.out.println(board);
+    }
 }
