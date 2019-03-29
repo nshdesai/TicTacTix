@@ -19,6 +19,7 @@ public class TicTacTixTest {
     private static final int GREETING_MESSAGE = 1;
     private static final int GET_PLAYER_NAME = 2;
     private static final int HALL_OF_FAME = 3;
+    private static final String HALL_OF_FAME_FILE = "HallOfFame.txt";
 
     private static final Scanner input = new Scanner(System.in);
     private static BufferedReader buffer; // To read the file
@@ -100,10 +101,14 @@ public class TicTacTixTest {
         }
     }
 
+    /**
+     * Method to print the players in the hall of fame file (if it exists).
+     * If the file doesn't exist it prints the appropriate message.
+     */
     private static void printHallofFame() {
         printPrompt(HALL_OF_FAME);
         try {
-            buffer = new BufferedReader(new FileReader("HallOfFame.txt"));
+            buffer = new BufferedReader(new FileReader(HALL_OF_FAME_FILE));
 
             String line = "";
             while (line != null) {
@@ -121,6 +126,11 @@ public class TicTacTixTest {
         System.out.println("\n********************");
     }
 
+    /**
+     * Method to handle the main game loop
+     * @param goingFirst  character code of the player going first
+     * @param goingSecond character code of the player going second
+     */
     private static void gameLoop(char goingFirst, char goingSecond) {
         char gameState = board.PLAYABLE;
 
@@ -133,6 +143,20 @@ public class TicTacTixTest {
         handleEnding(gameState);
     }
 
+    /**
+     * Handles a singular move made by a player. given the player's character code
+     * @param player the code for the player whose move is to be handled (PLAYER / COMPUTER)
+     */
+    private static void handlePlayer(char player) {
+        System.out.println(getPlayerGreeting(player));
+        board.makeMove(player);
+        System.out.println(board);
+    }
+
+    /**
+     * Method to handle all possible ways the game could end
+     * @param gameState character code (read from the TicTacTix class) for the state of the game (PLAYER/COMPUTER/STALEMATE)
+     */
     private static void handleEnding(char gameState) {
         if (gameState == board.PLAYER) {
             System.out.println("Yay! You won!");
@@ -150,9 +174,25 @@ public class TicTacTixTest {
         printPrompt(10); // Good-bye!
     }
 
+    /**
+     * Simple helper method to return a String containing a simple greeting prompt
+     * before each player's turn.
+     * @param  player character code for the player (the code for current player's turn)
+     * @return        String containing 'turn prompt' for the current player
+     */
+    private static String getPlayerGreeting(char player) {
+        if (player == board.PLAYER) {
+            return "User's turn";
+        }
+        return "Computer's turn";
+    }
+
+    /**
+     * Appends the high scorer's name to the Hall of Fame file.
+     */
     private static void addHighScorer() {
         try {
-            writer = new PrintWriter(new FileWriter("HallOfFame.txt", true));
+            writer = new PrintWriter(new FileWriter(HALL_OF_FAME_FILE, true));
             String playerName = "";
 
             while (playerName.equals("")) {
@@ -167,22 +207,10 @@ public class TicTacTixTest {
             writer.close();
             System.out.println("You have been inducted into the TicTacTix Hall of Fame!");
         }
+        // If the file could not be opened
         catch(IOException e) {
             System.out.println("The high score file is currently busy. Fatal. Exiting.");
             System.exit(0);
         }
-    }
-
-    private static String getPlayerGreeting(char player) {
-        if (player == board.PLAYER) {
-            return "User's turn";
-        }
-        return "Computer's turn";
-    }
-
-    private static void handlePlayer(char player) {
-        System.out.println(getPlayerGreeting(player));
-        board.makeMove(player);
-        System.out.println(board);
     }
 }
