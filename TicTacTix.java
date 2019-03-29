@@ -33,7 +33,7 @@ public class TicTacTix {
 
     public TicTacTix () {
         board = new char[3][3][3];
-        initBoard(board);
+        initBoard();
         board[1][1][1] = 'N'; // The center cell is inaccessible
     }
 
