@@ -217,10 +217,13 @@ public class TicTacTix {
     /**
      * Checks of any diagonal streak on the board. Any streak that isn't a straight line
      * in any plane (x/y/z) is considered a diagonal streak.
+     *
      * @param  symbol the character code for the player
      * @return        did the specified player hit any diagonal streak (boolean) ?
      */
     private boolean checkDiagonals(char symbol) {
+        // Note: This is a very ugly way to solve this sub-problem,
+        // but optimizing it (while keeping it readable) would involve significantly more code.
         // Don't check the middle layer because not vertical diagonals can pass through it's center
         int[] diag_cells = {0, 2}; // Possible end coords for a diagonal
 
